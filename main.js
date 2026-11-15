@@ -169,7 +169,10 @@ function startServer(serverJs) {
       ...process.env,
       ELECTRON_RUN_AS_NODE: '1',
       APP_PATH: app.getPath('userData'),
-      FFMPEG_BIN: '/usr/bin/ffmpeg',
+      // The compatibility wrapper translates options that FFmpeg 9 dropped.
+      FFMPEG_BIN: fs.existsSync('/usr/lib/stremio-web-shell/ffmpeg-compat')
+        ? '/usr/lib/stremio-web-shell/ffmpeg-compat'
+        : '/usr/bin/ffmpeg',
       FFPROBE_BIN: '/usr/bin/ffprobe',
       NO_CORS: '1',
       CASTING_DISABLED: '1',

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# FFmpeg 9 removed the -vsync option, which the Stremio server still passes.
+# Translate it to -fps_mode and hand everything else to the real binary.
+
+args=()
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -vsync)
+      shift
+      value="${1:-auto}"
+      case "$value" in
+        cfr|vfr|passthrough|auto) args+=(-fps_mode "$value") ;;
+        0) args+=(-fps_mode passthrough) ;;
+        1) args+=(-fps_mode cfr) ;;
+        2) args+=(-fps_mode vfr) ;;
+        *) args+=(-fps_mode auto) ;;
+      esac
+      ;;
+    *)
+      args+=("$1")
+      ;;
+  esac
+  shift
+done
+
+exec /usr/bin/ffmpeg "${args[@]}"

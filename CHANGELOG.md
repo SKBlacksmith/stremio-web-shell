@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.1.0-3
+
+- Ship an ffmpeg compatibility wrapper: FFmpeg 9 removed `-vsync`, which the
+  streaming server still passes, so every hardware profile test aborted and
+  the server reported "no viable acceleration profiles".
+
 ## 5.1.0-2
 
 - Fix the server bundle download: the helper appended `.part` to a path that

@@ -1,7 +1,7 @@
 # Maintainer: SKBlacksmith <skblacksmith@users.noreply.github.com>
 pkgname=stremio-web-shell
 pkgver=5.1.0
-pkgrel=2
+pkgrel=3
 _serverver=4.22.5
 pkgdesc="Stremio web client (v5) in a thin Electron shell with a self-managed streaming server"
 arch=('x86_64' 'aarch64')
@@ -17,10 +17,11 @@ source=(
   'main.js'
   'stremio-web-shell.desktop'
   'stremio-web-shell'
+  'ffmpeg-compat'
   'icon.png'
   "server.js::https://dl.strem.io/server/v${_serverver}/desktop/server.js"
 )
-sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
+sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 
 build() {
   cd "stremio-web-${pkgver}"
@@ -37,6 +38,7 @@ package() {
   install -Dm644 "${srcdir}/stremio-web-shell.desktop" \
     "${pkgdir}/usr/share/applications/${pkgname}.desktop"
   install -Dm755 "${srcdir}/stremio-web-shell" "${pkgdir}/usr/bin/${pkgname}"
+  install -Dm755 "${srcdir}/ffmpeg-compat" "${pkgdir}/usr/lib/${pkgname}/ffmpeg-compat"
 
   # The streaming server bundle is proprietary and is not redistributed here.
   # The package ships only a manifest with its version, URL and checksum; the
