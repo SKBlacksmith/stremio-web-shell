@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Stremio
+GenericName=Media Center
+Comment=Stremio web client with a local streaming server
+Exec=stremio-web-shell %U
+Icon=stremio-web-shell
+Terminal=false
+Categories=AudioVideo;Video;Player;
+StartupWMClass=stremio-web-shell

@@ -1,0 +1,52 @@
+name: build
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+      options: --privileged
+    steps:
+      - name: Install build tools
+        run: |
+          pacman -Syu --noconfirm --needed base-devel git nodejs pnpm pacman-contrib sudo
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build package
+        run: |
+          useradd -m builder
+          chown -R builder:builder "$GITHUB_WORKSPACE"
+          sudo -u builder bash -lc '
+            set -euo pipefail
+            cd "$GITHUB_WORKSPACE"
+            export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+            corepack enable
+            updpkgsums
+            makepkg -s --noconfirm --nodeps --nocheck
+          '
+
+      - name: Build pacman repository
+        run: |
+          mkdir -p public/x86_64
+          cp ./*.pkg.tar.zst public/x86_64/
+          repo-add public/x86_64/stremio-web-shell.db.tar.gz public/x86_64/*.pkg.tar.zst
+          cd public/x86_64
+          rm -f stremio-web-shell.db stremio-web-shell.files
+          ln -s stremio-web-shell.db.tar.gz stremio-web-shell.db
+          ln -s stremio-web-shell.files.tar.gz stremio-web-shell.files
+
+      - name: Publish repository
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
+          publish_branch: gh-pages
+          keep_files: true

@@ -1,0 +1,6 @@
+*.pkg.tar.*
+pkg/
+src/
+*.part
+repo/
+__pycache__/
