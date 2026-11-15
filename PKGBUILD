@@ -1,7 +1,7 @@
 # Maintainer: SKBlacksmith <skblacksmith@users.noreply.github.com>
 pkgname=stremio-web-shell
 pkgver=5.1.0
-pkgrel=1
+pkgrel=2
 _serverver=4.22.5
 pkgdesc="Stremio web client (v5) in a thin Electron shell with a self-managed streaming server"
 arch=('x86_64' 'aarch64')

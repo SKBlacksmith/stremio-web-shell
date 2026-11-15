@@ -5,6 +5,9 @@
 'use strict';
 
 const { app, BrowserWindow, dialog, shell } = require('electron');
+
+// Electron defaults to X11 on Linux; follow the session instead.
+app.commandLine.appendSwitch('ozone-platform-hint', 'auto');
 const { spawn } = require('node:child_process');
 const crypto = require('node:crypto');
 const fs = require('node:fs');
@@ -16,9 +19,7 @@ const UI_PORT = 11469;
 const SERVER_PORT = 11470;
 const UI_HOST = '127.0.0.1';
 
-const RESOURCE_DIR = app.isPackaged
-  ? path.join(process.resourcesPath, 'stremio-web-shell')
-  : __dirname;
+const RESOURCE_DIR = app.getAppPath();
 
 const WEB_ROOT = path.join(RESOURCE_DIR, 'web');
 const MANIFEST_FILE = path.join(RESOURCE_DIR, 'server-version.json');
@@ -84,14 +85,14 @@ async function ensureServer() {
   }
 
   log('fetching server.js', manifest.version);
-  const target = SERVER_JS + '.part';
-  await download(manifest.url, target);
-  const actual = sha256File(target);
+  await download(manifest.url, SERVER_JS);
+  const partial = SERVER_JS + '.part';
+  const actual = sha256File(partial);
   if (actual !== manifest.sha256) {
-    fs.rmSync(target, { force: true });
+    fs.rmSync(partial, { force: true });
     throw new Error(`server.js checksum mismatch: ${actual} != ${manifest.sha256}`);
   }
-  fs.renameSync(target, SERVER_JS);
+  fs.renameSync(partial, SERVER_JS);
   fs.writeFileSync(
     path.join(CACHE_DIR, 'server-version'),
     manifest.version + '\n',
