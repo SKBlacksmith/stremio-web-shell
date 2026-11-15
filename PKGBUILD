@@ -8,7 +8,7 @@ arch=('x86_64' 'aarch64')
 url="https://github.com/SKBlacksmith/stremio-web-shell"
 license=('GPL-2.0-only')
 depends=('electron' 'ffmpeg' 'mesa')
-makedepends=('nodejs' 'pnpm' 'git')
+makedepends=('nodejs' 'npm' 'git')
 provides=('stremio-web-desktop')
 conflicts=('stremio-web-desktop' 'stremio-web-desktop-bin')
 options=('!strip')
@@ -25,8 +25,6 @@ sha256sums=('SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP' 'SKIP')
 build() {
   cd "stremio-web-${pkgver}"
   export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-  corepack enable --install-directory "${srcdir}/bin" || true
-  export PATH="${srcdir}/bin:${PATH}"
   pnpm install --frozen-lockfile
   pnpm run build
 }

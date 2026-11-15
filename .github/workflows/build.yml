@@ -14,7 +14,8 @@ jobs:
     steps:
       - name: Install build tools
         run: |
-          pacman -Syu --noconfirm --needed base-devel git nodejs pnpm pacman-contrib sudo
+          pacman -Syu --noconfirm --needed base-devel git nodejs npm pacman-contrib sudo
+          npm install -g pnpm
 
       - uses: actions/checkout@v4
         with:
@@ -28,8 +29,6 @@ jobs:
             set -eo pipefail
             cd "$WORKSPACE"
             git config --global --add safe.directory "$WORKSPACE"
-            export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
-            corepack enable
             updpkgsums
             makepkg -s --noconfirm --nodeps --nocheck
           '
